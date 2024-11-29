@@ -19,12 +19,22 @@ public class Messages
         AnsiConsole.MarkupLine($"[olive]Warning[/]: {message}");
     }
     
-    public static void ShowRule(string message, Justify position)
+    public static void ShowRule(string message, Justify position = Justify.Left)
     {
         var rule = new Rule($"[navy]{message}[/]")
         {
             Justification = position
         };
         AnsiConsole.Write(rule);
+    }
+    
+    public static void ShowCancelOperation()
+    {
+        AnsiConsole.MarkupLine("[olive]Operação cancelada.[/]");
+    }
+    
+    public static void ShowEndProgram()
+    {
+        AnsiConsole.MarkupLine($"[olive]Programa encerrado.[/]");
     }
 }
