@@ -18,16 +18,16 @@ internal class ActivityCommand(IActivityRepository activityRepository) : Command
         switch (select)
         {
             case "Visualizar":
-                View();
+                activityRepository.Views();
                 break;
             case "Inserir":
-                Insert();
+                activityRepository.Create();
                 break;
             case "Editar":
-                Edit();
+                activityRepository.Update();
                 break;
             case "Deletar":
-                Delete();
+                activityRepository.Delete();
                 break;
             case "Sair":
                 Messages.ShowEndProgram();
@@ -35,52 +35,5 @@ internal class ActivityCommand(IActivityRepository activityRepository) : Command
         }
 
         return 0;
-    }
-    
-    private void View()
-    {
-        Messages.ShowRule("Visualização de atividades");
-        var select = AnsiConsole.Prompt(new SelectionPrompt<string>()
-            .Title("Escolha uma opção de visualização:")
-            .AddChoices("Listar todos", "Buscar por código", "Sair")
-        );
-        
-        switch (select)
-        {
-            case "Listar todos":
-                var activities = activityRepository.GetAll();
-                activityRepository.ActivityTable(activities);
-                break;
-            case "Buscar por código":
-                var id = AnsiConsole.Prompt(new TextPrompt<long>("Informe o [navy]código[/] da atividade:")
-                    .Validate(input => input > 0 
-                        ? ValidationResult.Success() 
-                        : ValidationResult.Error("[red]Código deve ser maior que zero.[/]"))
-                );
-                var activity = activityRepository.GetById(id);
-                if (activity is null)
-                {
-                    Messages.ShowError("Atividade [maroon]não[/] foi encontrada.");
-                    return;
-                }
-                activityRepository.ActivityTable(activity);
-                break;
-            case "Sair":
-                Messages.ShowEndProgram();
-                return;
-        }
-    }
-    
-    private void Insert()
-    {
-        activityRepository.Create();
-    }
-    
-    private void Edit()
-    {
-    }
-    
-    private void Delete()
-    {
     }
 }
