@@ -35,6 +35,6 @@ public class Messages
     
     public static void ShowEndProgram()
     {
-        AnsiConsole.MarkupLine($"[olive]Programa encerrado.[/]");
+        AnsiConsole.MarkupLine("[olive]Programa encerrado.[/]");
     }
 }
