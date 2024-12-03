@@ -92,6 +92,16 @@ public sealed class ActivityRepository(ApplicationDbContext context) : IActivity
     {
         var name = AskActivityName();
 
+        var nameExist = GetByName(name);
+        if (nameExist is not null)
+        {
+            Messages.ShowWarning("Este nome [maroon]já existe[/].");
+            var confirmation = AnsiConsole.Prompt(new ConfirmationPrompt("Deseja criar essa atividade com [olive]nome duplicado[/]?"));
+            if (!confirmation)
+            {
+                return;
+            }
+        }
         var activity = new Activity { Name = name };
         context.Activities.Add(activity);
         context.SaveChanges();
@@ -113,6 +123,16 @@ public sealed class ActivityRepository(ApplicationDbContext context) : IActivity
         if (confirmationName)
         {
             var newName = AskActivityName();
+            var nameExist = GetByName(newName);
+            if (nameExist is not null)
+            {
+                Messages.ShowWarning("Este nome [maroon]já existe[/].");
+                var confirmation = AnsiConsole.Prompt(new ConfirmationPrompt("Deseja criar essa atividade com [olive]nome duplicado[/]?"));
+                if (!confirmation)
+                {
+                    return;
+                }
+            }
             activity.Name = newName;
         }
         
