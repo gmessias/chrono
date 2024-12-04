@@ -1,4 +1,5 @@
 using Chrono.Console.Database;
+using Chrono.Console.Enums;
 using Chrono.Console.Models;
 using Chrono.Console.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -46,23 +47,24 @@ public sealed class ActivityRepository(ApplicationDbContext context) : IActivity
     public void Views()
     {
         Messages.ShowRule("Visualização de atividades");
-        var select = AnsiConsole.Prompt(new SelectionPrompt<string>()
+        var select = AnsiConsole.Prompt(new SelectionPrompt<EnumActivityViewsOptions>()
             .Title("Escolha uma opção de visualização:")
-            .AddChoices("Listar todos", "Listar todos ativos", "Listar por filtro", "Buscar por código", "Buscar por nome", "Sair")
+            .AddChoices(Enum.GetValues<EnumActivityViewsOptions>())
+            .UseConverter(option => option.GetDescription())
         );
         
         switch (select)
         {
-            case "Listar todos":
+            case EnumActivityViewsOptions.ListarTodos:
                 ActivityTable(GetAll());
                 break;
-            case "Listar todos ativos":
+            case EnumActivityViewsOptions.ListarTodosAtivos:
                 ActivityTable(GetAllActive());
                 break;
-            case "Listar por filtro":
+            case EnumActivityViewsOptions.ListarPorFiltro:
                 ActivityTable(GetLikeName(AskActivityName()));
                 break;
-            case "Buscar por código":
+            case EnumActivityViewsOptions.BuscarPorCodigo:
                 var activity = GetById(AskActivityId());
                 if (activity is null)
                 {
@@ -71,7 +73,7 @@ public sealed class ActivityRepository(ApplicationDbContext context) : IActivity
                 }
                 ActivityTable(activity);
                 break;
-            case "Buscar por nome":
+            case EnumActivityViewsOptions.BuscarPorNome:
                 var activityByName = GetByName(AskActivityName());
                 if (activityByName is null)
                 {
@@ -80,7 +82,7 @@ public sealed class ActivityRepository(ApplicationDbContext context) : IActivity
                 }
                 ActivityTable(activityByName);
                 break;
-            case "Sair":
+            case EnumActivityViewsOptions.Sair:
                 Messages.ShowEndProgram();
                 return;
         }
@@ -90,6 +92,16 @@ public sealed class ActivityRepository(ApplicationDbContext context) : IActivity
     {
         var name = AskActivityName();
 
+        var nameExist = GetByName(name);
+        if (nameExist is not null)
+        {
+            Messages.ShowWarning("Este nome [maroon]já existe[/].");
+            var confirmation = AnsiConsole.Prompt(new ConfirmationPrompt("Deseja criar essa atividade com [olive]nome duplicado[/]?"));
+            if (!confirmation)
+            {
+                return;
+            }
+        }
         var activity = new Activity { Name = name };
         context.Activities.Add(activity);
         context.SaveChanges();
@@ -111,25 +123,35 @@ public sealed class ActivityRepository(ApplicationDbContext context) : IActivity
         if (confirmationName)
         {
             var newName = AskActivityName();
+            var nameExist = GetByName(newName);
+            if (nameExist is not null)
+            {
+                Messages.ShowWarning("Este nome [maroon]já existe[/].");
+                var confirmation = AnsiConsole.Prompt(new ConfirmationPrompt("Deseja criar essa atividade com [olive]nome duplicado[/]?"));
+                if (!confirmation)
+                {
+                    return;
+                }
+            }
             activity.Name = newName;
         }
         
         var confirmationIsActive = AnsiConsole.Prompt(new ConfirmationPrompt("Deseja atualizar o [navy]status[/] da atividade?"));
         if (confirmationIsActive)
         {
-            var newIsActive = AnsiConsole.Prompt(new SelectionPrompt<string>()
+            var newIsActive = AnsiConsole.Prompt(new SelectionPrompt<EnumActivityActive>()
                 .Title("Informe o novo [navy]status[/] da atividade:")
-                .AddChoices("Ativo", "Inativo", "Cancelar")
+                .AddChoices(Enum.GetValues<EnumActivityActive>())
             );
             switch (newIsActive)
             {
-                case "Ativo":
+                case EnumActivityActive.Ativo:
                     activity.IsActive = true;
                     break;
-                case "Inativo":
+                case EnumActivityActive.Inativo:
                     activity.IsActive = false;
                     break;
-                case "Cancelar":
+                case EnumActivityActive.Cancelar:
                     Messages.ShowEndProgram();
                     return;
             }
