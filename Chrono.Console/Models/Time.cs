@@ -1,10 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace Chrono.Console.Models;
 
 public sealed class Time
 {
     public long Id { get; init; }
+    [MaxLength(32)]
     public string Name { get; set; } = string.Empty;
-    public Activity Activity { get; set; } = new Activity();
+    public required Activity Activity { get; set; }
     public string TimeCount 
     {
         get => _timeCount.ToString(@"hh\:mm"); 
