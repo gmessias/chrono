@@ -19,6 +19,7 @@ public static class Program
             var dbPath = Path.Combine(AppContext.BaseDirectory, "chrono.db");
             options.UseSqlite($"Data Source={dbPath}");
         });
+        services.AddSingleton<IDatabaseRepository, DatabaseRepository>();
         services.AddSingleton<IActivityRepository, ActivityRepository>();
         services.AddSingleton<ITimeRepository, TimeRepository>();
         
