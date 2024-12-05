@@ -1,3 +1,4 @@
+using Chrono.Console.Core;
 using Chrono.Console.Enums;
 using Chrono.Console.Repositories.Interfaces;
 using Chrono.Console.Settings;
@@ -6,28 +7,32 @@ using Spectre.Console.Cli;
 
 namespace Chrono.Console.Commands;
 
-internal class TimeCommand(ITimeRepository timeRepository) : Command<TimeSettings>
+internal class TimeCommand(ITimeRepository timeRepository, IActivityRepository activityRepository) : Command<TimeSettings>
 {
     public override int Execute(CommandContext context, TimeSettings settings)
     {
+        Messages.ShowRule("Marcação de horas");
+        
         var select = AnsiConsole.Prompt(new SelectionPrompt<EnumTimeOptions>()
             .Title("Escolha uma opção:")
             .AddChoices(Enum.GetValues<EnumTimeOptions>())
         );
+        
+        var timeApplication = new TimeApplication(timeRepository, activityRepository);
 
         switch (select)
         {
             case EnumTimeOptions.Visualizar:
-                timeRepository.Views();
+                timeApplication.Views();
                 break;
             case EnumTimeOptions.Inserir:
-                timeRepository.Create();
+                timeApplication.Create();
                 break;
             case EnumTimeOptions.Editar:
-                timeRepository.Update();
+                timeApplication.Update();
                 break;
             case EnumTimeOptions.Deletar:
-                timeRepository.Delete();
+                timeApplication.Delete();
                 break;
             case EnumTimeOptions.Sair:
                 Messages.ShowEndProgram();

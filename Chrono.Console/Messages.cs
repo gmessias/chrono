@@ -2,7 +2,7 @@ using Spectre.Console;
 
 namespace Chrono.Console;
 
-public class Messages
+public static class Messages
 {
     public static void ShowSuccess(string message)
     {
