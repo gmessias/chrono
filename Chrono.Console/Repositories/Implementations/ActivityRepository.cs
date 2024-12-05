@@ -1,9 +1,7 @@
 using Chrono.Console.Database;
-using Chrono.Console.Enums;
 using Chrono.Console.Models;
 using Chrono.Console.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Spectre.Console;
 
 namespace Chrono.Console.Repositories.Implementations;
 

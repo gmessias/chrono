@@ -150,7 +150,7 @@ public sealed class ActivityApplication(IActivityRepository activityRepository)
         }
     }
     
-    public Activity? SearchActivity(long id)
+    private Activity? SearchActivity(long id)
     {
         var activity = activityRepository.GetById(id);
         if (activity is null)
@@ -160,7 +160,7 @@ public sealed class ActivityApplication(IActivityRepository activityRepository)
         return activity;
     }
     
-    public Activity? SearchActivity(string name)
+    private Activity? SearchActivity(string name)
     {
         var activity = activityRepository.GetByName(name);
         if (activity is null)
@@ -170,7 +170,7 @@ public sealed class ActivityApplication(IActivityRepository activityRepository)
         return activity;
     }
     
-    public static long AskActivityId()
+    public long AskActivityId()
     {
         return AnsiConsole.Prompt(new TextPrompt<long>("Informe o [navy]código[/] da atividade:")
             .Validate(input => input > 0 
@@ -179,7 +179,7 @@ public sealed class ActivityApplication(IActivityRepository activityRepository)
         );
     }
     
-    public static string AskActivityName()
+    public string AskActivityName()
     {
         return AnsiConsole.Prompt(new TextPrompt<string>("Informe o [navy]nome[/] da atividade:")
             .Validate(input => 
@@ -197,13 +197,13 @@ public sealed class ActivityApplication(IActivityRepository activityRepository)
         );
     }
     
-    public static void ActivityTable(Activity activity)
+    private void ActivityTable(Activity activity)
     {
         var activities = new List<Activity> { activity };
         ActivityTable(activities);
     }
     
-    public static void ActivityTable(IEnumerable<Activity> activities)
+    public void ActivityTable(IEnumerable<Activity> activities)
     {
         var table = new Table();
         table.AddColumn(new TableColumn("Id").Centered());
