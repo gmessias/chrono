@@ -1,3 +1,4 @@
+using Chrono.Console.Core;
 using Chrono.Console.Enums;
 using Chrono.Console.Repositories.Interfaces;
 using Chrono.Console.Settings;
@@ -11,24 +12,27 @@ internal class ActivityCommand(IActivityRepository activityRepository) : Command
     public override int Execute(CommandContext context, ActivitySettings settings)
     {
         Messages.ShowRule("Atividades");
+        
         var select = AnsiConsole.Prompt(new SelectionPrompt<EnumActivityOptions>()
             .Title("Escolha uma opção:")
             .AddChoices(Enum.GetValues<EnumActivityOptions>())
         );
+
+        var activityApplication = new ActivityApplication(activityRepository);
         
         switch (select)
         {
             case EnumActivityOptions.Visualizar:
-                activityRepository.Views();
+                activityApplication.Views();
                 break;
             case EnumActivityOptions.Inserir:
-                activityRepository.Create();
+                activityApplication.Create();
                 break;
             case EnumActivityOptions.Editar:
-                activityRepository.Update();
+                activityApplication.Update();
                 break;
             case EnumActivityOptions.Deletar:
-                activityRepository.Delete();
+                activityApplication.Delete();
                 break;
             case EnumActivityOptions.Sair:
                 Messages.ShowEndProgram();

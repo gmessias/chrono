@@ -4,14 +4,13 @@ namespace Chrono.Console.Repositories.Interfaces;
 
 public interface IActivityRepository
 {
+    IEnumerable<Activity> GetAll();
     IEnumerable<Activity> GetAllActive();
+    IEnumerable<Activity> GetLikeName(string name);
     Activity? GetById(long id);
     Activity? GetByName(string name);
-    void Views();
-    void Create();
-    void Update();
-    void Delete();
-    long AskActivityId();
-    string AskActivityName();
-    void ActivityTable(IEnumerable<Activity> activities);
+    bool NameExists(string name);
+    void Create(Activity activity);
+    void Update(Activity activity);
+    void Delete(Activity activity);
 }
